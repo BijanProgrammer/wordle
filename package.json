@@ -1,0 +1,8 @@
+{
+    "name": "wordle",
+    "version": "1.0.0",
+    "author": "BijanProgrammer",
+    "dependencies": {
+        "prettier": "^3.2.5"
+    }
+}

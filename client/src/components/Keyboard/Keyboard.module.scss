@@ -1,0 +1,41 @@
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+
+    .row {
+        display: flex;
+        justify-content: center;
+        gap: inherit;
+
+        width: 100%;
+    }
+
+    .key {
+        background-color: hsl(200, 1%, 51%);
+        color: hsl(0, 0%, 98%);
+
+        display: grid;
+        place-items: center;
+
+        width: 4.3rem;
+        height: 5.8rem;
+
+        border: none;
+        border-radius: 0.4rem;
+
+        font-size: 1.6rem;
+        text-transform: uppercase;
+
+        svg {
+            fill: currentColor;
+
+            width: auto;
+            height: 1.6em;
+        }
+
+        &.large {
+            width: 7.2rem;
+        }
+    }
+}
