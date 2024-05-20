@@ -1,8 +1,8 @@
 import {ReactElement, useContext} from 'react';
 
-import {WordleContext} from '../../providers/Wordle/WordleProvider.tsx';
+import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
 
-import {ArrayUtils} from '../../utils/array-utils.ts';
+import {ArrayUtils} from '@/utils/array-utils.ts';
 
 import Word from './components/Word/Word.tsx';
 

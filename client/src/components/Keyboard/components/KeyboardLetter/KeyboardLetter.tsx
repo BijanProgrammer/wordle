@@ -2,9 +2,9 @@ import {ReactElement, useContext} from 'react';
 
 import clsx from 'clsx';
 
-import {Letter} from '../../../../models/letter.ts';
+import {Letter} from '@/models/letter.ts';
 
-import {WordleContext} from '../../../../providers/Wordle/WordleProvider.tsx';
+import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
 
 import keyboardStyles from '../../Keyboard.module.scss';
 import styles from './KeyboardLetter.module.scss';

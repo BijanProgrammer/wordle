@@ -2,14 +2,14 @@ import {ReactElement, useContext, useEffect} from 'react';
 
 import clsx from 'clsx';
 
-import {Letter, LETTERS} from '../../models/letter.ts';
+import {Input} from '@/models/input.ts';
+import {Letter, LETTERS} from '@/models/letter.ts';
 
-import {WordleContext} from '../../providers/Wordle/WordleProvider.tsx';
+import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
 
 import KeyboardLetters from './components/KeyboardLetters/KeyboardLetters.tsx';
 
 import styles from './Keyboard.module.scss';
-import {Input} from '../../models/input.ts';
 
 function Keyboard(): ReactElement {
     const {inputHandler} = useContext(WordleContext);

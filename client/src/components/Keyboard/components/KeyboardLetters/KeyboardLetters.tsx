@@ -1,6 +1,6 @@
 import {ReactElement} from 'react';
 
-import {Letter} from '../../../../models/letter.ts';
+import {Letter} from '@/models/letter.ts';
 
 import KeyboardLetter from '../KeyboardLetter/KeyboardLetter.tsx';
 

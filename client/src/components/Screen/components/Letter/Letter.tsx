@@ -2,7 +2,7 @@ import {ReactElement, useContext} from 'react';
 
 import clsx from 'clsx';
 
-import {WordleContext} from '../../../../providers/Wordle/WordleProvider.tsx';
+import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
 
 import styles from './Letter.module.scss';
 

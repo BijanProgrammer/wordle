@@ -1,6 +1,6 @@
 import {ReactElement} from 'react';
 
-import {ArrayUtils} from '../../../../utils/array-utils.ts';
+import {ArrayUtils} from '@/utils/array-utils.ts';
 
 import Letter from '../Letter/Letter.tsx';
 
