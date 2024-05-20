@@ -50,3 +50,9 @@ body {
     background-color: var(--color-body-background);
     color: var(--color-body-foreground);
 }
+
+#toast {
+    z-index: 999;
+
+    font-size: 1.6rem;
+}

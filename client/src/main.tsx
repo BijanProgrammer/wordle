@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 
 import App from '@/App.tsx';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 import '@/styles/fonts.scss';
 import './index.scss';
 

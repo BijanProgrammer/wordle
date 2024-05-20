@@ -1,7 +1,9 @@
+import {toast} from 'react-toastify';
+
 export class ValidationUtils {
     public static async isValidGuess(guess: string): Promise<boolean> {
         if (guess.length < 5) {
-            console.warn('Not enough letters');
+            toast.warn('Not enough letters');
             return false;
         }
 
@@ -9,7 +11,7 @@ export class ValidationUtils {
         const isValid = await response.json();
 
         if (!isValid) {
-            console.warn('Not valid');
+            toast.warn('Not valid');
             return false;
         }
 

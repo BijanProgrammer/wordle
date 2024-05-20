@@ -1,5 +1,7 @@
 import {createContext, PropsWithChildren, ReactElement, useCallback, useContext, useState} from 'react';
 
+import {toast} from 'react-toastify';
+
 import {Input} from '@/models/input.ts';
 import {Letter} from '@/models/letter.ts';
 
@@ -38,7 +40,7 @@ function WordsProvider({children}: Props): ReactElement {
 
     const enterInputHandler = useCallback(async (): Promise<void> => {
         if (!solution) {
-            console.warn('Not loaded yet');
+            toast.warn('Not loaded yet');
             return;
         }
 
