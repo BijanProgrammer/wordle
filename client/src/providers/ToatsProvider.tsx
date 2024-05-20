@@ -15,7 +15,7 @@ function ToastProvider({children}: Props): ReactElement {
             <div id="toast">
                 <ToastContainer
                     position="bottom-right"
-                    autoClose={3000}
+                    autoClose={1000}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick

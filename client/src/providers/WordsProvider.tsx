@@ -30,6 +30,8 @@ function WordsProvider({children}: Props): ReactElement {
     const [words, setWords] = useState<string[]>(ArrayUtils.fill(6, ''));
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
+    const [isGameOver, setIsGameOver] = useState<boolean>(false);
+
     const updateWord = useCallback((index: number, value: string): void => {
         setWords((old) => {
             const result = [...old];
@@ -40,13 +42,21 @@ function WordsProvider({children}: Props): ReactElement {
 
     const enterInputHandler = useCallback(async (): Promise<void> => {
         if (!solution) {
-            toast.warn('Not loaded yet');
+            toast.warn('Not loaded yet...');
             return;
         }
 
         const guess = words[currentWordIndex];
         if (!(await ValidationUtils.isValidGuess(guess))) {
             return;
+        }
+
+        if (guess === solution) {
+            toast.success('You won :)');
+            setIsGameOver(true);
+        } else if (currentWordIndex === words.length - 1) {
+            toast.error('You lost :(');
+            setIsGameOver(true);
         }
 
         updateWord(currentWordIndex, guess);
@@ -76,6 +86,11 @@ function WordsProvider({children}: Props): ReactElement {
 
     const inputHandler = useCallback(
         (input: Input): void => {
+            if (isGameOver) {
+                toast.warning('The game is over.', {toastId: 'GAME_OVER_WARNING'});
+                return;
+            }
+
             switch (input) {
                 case 'enter':
                     enterInputHandler().then();
@@ -88,7 +103,7 @@ function WordsProvider({children}: Props): ReactElement {
                     break;
             }
         },
-        [enterInputHandler, backspaceInputHandler, letterInputHandler]
+        [isGameOver, enterInputHandler, backspaceInputHandler, letterInputHandler]
     );
 
     return <WordsContext.Provider value={{words, currentWordIndex, inputHandler}}>{children}</WordsContext.Provider>;
