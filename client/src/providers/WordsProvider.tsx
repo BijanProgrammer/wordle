@@ -28,6 +28,14 @@ function WordsProvider({children}: Props): ReactElement {
     const [words, setWords] = useState<string[]>(ArrayUtils.fill(6, ''));
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
+    const updateWord = useCallback((index: number, value: string): void => {
+        setWords((old) => {
+            const result = [...old];
+            result[index] = value;
+            return result;
+        });
+    }, []);
+
     const enterInputHandler = useCallback(async (): Promise<void> => {
         if (!solution) {
             console.warn('Not loaded yet');
@@ -39,23 +47,18 @@ function WordsProvider({children}: Props): ReactElement {
             return;
         }
 
-        setWords((old) => [...old, guess]);
+        updateWord(currentWordIndex, guess);
         setCurrentWordIndex((old) => old + 1);
-    }, [words, currentWordIndex, solution]);
+    }, [words, currentWordIndex, solution, updateWord]);
 
     const backspaceInputHandler = useCallback(() => {
         const currentWord = words[currentWordIndex];
-
         if (currentWord.length <= 0) {
             return;
         }
 
-        setWords((old) => {
-            const newWords = [...old];
-            newWords[currentWordIndex] = currentWord.substring(0, currentWord.length - 1);
-            return newWords;
-        });
-    }, [words, currentWordIndex]);
+        updateWord(currentWordIndex, currentWord.substring(0, currentWord.length - 1));
+    }, [words, currentWordIndex, updateWord]);
 
     const letterInputHandler = useCallback(
         (letter: Letter) => {
@@ -64,28 +67,24 @@ function WordsProvider({children}: Props): ReactElement {
                 return;
             }
 
-            setWords((old) => {
-                const newWords = [...old];
-                newWords[currentWordIndex] = currentWord + letter;
-                return newWords;
-            });
+            updateWord(currentWordIndex, currentWord + letter);
         },
-        [words, currentWordIndex]
+        [words, currentWordIndex, updateWord]
     );
 
     const inputHandler = useCallback(
         (input: Input): void => {
-            if (input === 'enter') {
-                enterInputHandler().then();
-                return;
+            switch (input) {
+                case 'enter':
+                    enterInputHandler().then();
+                    break;
+                case 'backspace':
+                    backspaceInputHandler();
+                    break;
+                default:
+                    letterInputHandler(input);
+                    break;
             }
-
-            if (input === 'backspace') {
-                backspaceInputHandler();
-                return;
-            }
-
-            letterInputHandler(input);
         },
         [enterInputHandler, backspaceInputHandler, letterInputHandler]
     );
