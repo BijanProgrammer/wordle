@@ -1,6 +1,7 @@
 import {ReactElement, useContext} from 'react';
 
-import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
+import {ColorContext} from '@/providers/ColorProvider.tsx';
+import {WordsContext} from '@/providers/WordsProvider.tsx';
 
 import {ArrayUtils} from '@/utils/array-utils.ts';
 
@@ -14,7 +15,8 @@ type Props = {
 };
 
 function Word({index, word}: Props): ReactElement {
-    const {wordsColors, currentWordIndex} = useContext(WordleContext);
+    const {currentWordIndex} = useContext(WordsContext);
+    const {wordsColors} = useContext(ColorContext);
 
     const isSubmitted = index < currentWordIndex;
 

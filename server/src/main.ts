@@ -7,16 +7,28 @@ import {MathUtils} from './utils/math-utils';
 
 const PORT = 5000;
 
-const app = express();
-app.use(cors());
+async function main(): Promise<void> {
+    const words = await readWords();
 
-app.get('/solution', async (req, res) => {
+    const app = express();
+    app.use(cors());
+
+    app.get('/solution', async (req, res) => {
+        const randomWord = words[MathUtils.generateRandomInteger(0, words.length)];
+
+        res.json(randomWord);
+    });
+
+    app.get('/check/:word', async (req, res) => {
+        res.json(words.includes(req.params.word));
+    });
+
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+}
+
+async function readWords(): Promise<string[]> {
     const buffer = await fs.readFile('database/words.json');
-    const words: string[] = JSON.parse(buffer.toString());
+    return JSON.parse(buffer.toString());
+}
 
-    const randomWord = words[MathUtils.generateRandomInteger(0, words.length)];
-
-    res.json(randomWord);
-});
-
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+main().then();

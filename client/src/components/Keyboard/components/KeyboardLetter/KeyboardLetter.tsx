@@ -4,7 +4,8 @@ import clsx from 'clsx';
 
 import {Letter} from '@/models/letter.ts';
 
-import {WordleContext} from '@/providers/Wordle/WordleProvider.tsx';
+import {ColorContext} from '@/providers/ColorProvider.tsx';
+import {WordsContext} from '@/providers/WordsProvider.tsx';
 
 import keyboardStyles from '../../Keyboard.module.scss';
 import styles from './KeyboardLetter.module.scss';
@@ -14,7 +15,8 @@ type KeyboardButtonProps = {
 };
 
 function KeyboardLetter({letter}: KeyboardButtonProps): ReactElement {
-    const {lettersColors, inputHandler} = useContext(WordleContext);
+    const {inputHandler} = useContext(WordsContext);
+    const {lettersColors} = useContext(ColorContext);
 
     const keyClickHandler = (letter: Letter): void => {
         inputHandler(letter);

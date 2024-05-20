@@ -1,77 +1,43 @@
-import {createContext, PropsWithChildren, ReactElement, useCallback, useEffect, useState} from 'react';
+import {createContext, PropsWithChildren, ReactElement, useCallback, useContext, useState} from 'react';
 
-import {Color} from '@/models/color.ts';
 import {Input} from '@/models/input.ts';
 import {Letter} from '@/models/letter.ts';
 
+import {SolutionContext} from '@/providers/SolutionProvider.tsx';
+
 import {ArrayUtils} from '@/utils/array-utils.ts';
-import {ColorUtils} from '@/utils/color-utils.ts';
+import {ValidationUtils} from '@/utils/validation-utils.ts';
 
 type ContextValue = {
     words: string[];
     currentWordIndex: number;
-    solution: string | null;
-    wordsColors: Color[][];
-    lettersColors: Map<Letter, Color>;
-    isLoading: boolean;
     inputHandler: (input: Input) => void;
 };
 
-export const WordleContext = createContext<ContextValue>({
+export const WordsContext = createContext<ContextValue>({
     words: [],
     currentWordIndex: 0,
-    solution: null,
-    wordsColors: [],
-    lettersColors: new Map<Letter, Color>(),
-    isLoading: false,
     inputHandler: () => {},
 });
 
-const BASE_URL = 'http://localhost:5000' as const;
-
 type Props = PropsWithChildren;
 
-function WordleProvider({children}: Props): ReactElement {
-    const [solution, setSolution] = useState<string | null>(null);
+function WordsProvider({children}: Props): ReactElement {
+    const {solution} = useContext(SolutionContext);
 
     const [words, setWords] = useState<string[]>(ArrayUtils.fill(6, ''));
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
-    const [wordsColors, setWordsColors] = useState<Color[][]>(ArrayUtils.fill(6, []));
-    const [lettersColors, setLettersColors] = useState<Map<Letter, Color>>(new Map());
-
-    useEffect(() => {
-        const fetchSolution = async (): Promise<void> => {
-            const response = await fetch(`${BASE_URL}/solution`);
-            const solution = await response.json();
-
-            setSolution(solution);
-        };
-
-        fetchSolution().then();
-    }, []);
-
-    useEffect(() => {
-        setLettersColors(ColorUtils.generateLettersColors(words, currentWordIndex, wordsColors));
-    }, [words, currentWordIndex, wordsColors]);
-
-    const enterInputHandler = useCallback((): void => {
+    const enterInputHandler = useCallback(async (): Promise<void> => {
         if (!solution) {
             console.warn('Not loaded yet');
             return;
         }
 
         const guess = words[currentWordIndex];
-        if (guess.length < 5) {
-            console.warn('Not enough letters');
+        if (!(await ValidationUtils.isValidGuess(guess))) {
             return;
         }
-
-        setWordsColors((old) => {
-            const newColors = [...old];
-            newColors[currentWordIndex] = ColorUtils.generateWordColors(guess, solution);
-            return newColors;
-        });
 
         setWords((old) => [...old, guess]);
         setCurrentWordIndex((old) => old + 1);
@@ -110,7 +76,7 @@ function WordleProvider({children}: Props): ReactElement {
     const inputHandler = useCallback(
         (input: Input): void => {
             if (input === 'enter') {
-                enterInputHandler();
+                enterInputHandler().then();
                 return;
             }
 
@@ -124,13 +90,7 @@ function WordleProvider({children}: Props): ReactElement {
         [enterInputHandler, backspaceInputHandler, letterInputHandler]
     );
 
-    return (
-        <WordleContext.Provider
-            value={{words, currentWordIndex, solution, wordsColors, lettersColors, isLoading: !!solution, inputHandler}}
-        >
-            {children}
-        </WordleContext.Provider>
-    );
+    return <WordsContext.Provider value={{words, currentWordIndex, inputHandler}}>{children}</WordsContext.Provider>;
 }
 
-export default WordleProvider;
+export default WordsProvider;
