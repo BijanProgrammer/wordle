@@ -14,7 +14,7 @@ function Screen(): ReactElement {
     return (
         <div className={styles.screen}>
             {ArrayUtils.fillMap(6, (index) => (
-                <Word key={index} word={words[index] || ''} />
+                <Word key={index} index={index} word={words[index] || ''} />
             ))}
         </div>
     );

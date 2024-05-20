@@ -1,20 +1,26 @@
 import {createContext, PropsWithChildren, ReactElement, useCallback, useEffect, useState} from 'react';
 
-import {Color} from '../../models/color.ts';
-import {Input} from '../../models/input.ts';
+import {Color} from '@/models/color.ts';
+import {Input} from '@/models/input.ts';
+import {Letter} from '@/models/letter.ts';
+
+import {ArrayUtils} from '@/utils/array-utils.ts';
+import {ColorUtils} from '@/utils/color-utils.ts';
 
 type ContextValue = {
     words: string[];
+    currentWordIndex: number;
     solution: string | null;
-    colors: Record<string, Color>;
+    colors: Color[][];
     isLoading: boolean;
     inputHandler: (input: Input) => void;
 };
 
 export const WordleContext = createContext<ContextValue>({
     words: [],
+    currentWordIndex: 0,
     solution: null,
-    colors: {},
+    colors: [],
     isLoading: false,
     inputHandler: () => {},
 });
@@ -24,100 +30,97 @@ const BASE_URL = 'http://localhost:5000' as const;
 type Props = PropsWithChildren;
 
 function WordleProvider({children}: Props): ReactElement {
-    const [words, setWords] = useState<string[]>(Array(6).fill(''));
     const [solution, setSolution] = useState<string | null>(null);
+
+    const [words, setWords] = useState<string[]>(ArrayUtils.fill(6, ''));
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
-    const [colors, setColors] = useState<Record<string, Color>>({});
+
+    const [colors, setColors] = useState<Color[][]>(ArrayUtils.fill(6, []));
 
     useEffect(() => {
-        const fetchGameData = async (): Promise<void> => {
-            const response = await fetch(`${BASE_URL}/`);
-            const data = await response.json();
+        const fetchSolution = async (): Promise<void> => {
+            const response = await fetch(`${BASE_URL}/solution`);
+            const solution = await response.json();
 
-            setSolution(data.solution);
+            setSolution(solution);
         };
 
-        fetchGameData().then();
+        fetchSolution().then();
     }, []);
 
-    const getColor = useCallback(
-        (letterInGuess: string, indexInGuess: number): Color => {
-            const indicesInSolution: number[] = [];
-            solution?.split('').forEach((letterInSolution, indexInSolution) => {
-                if (letterInGuess === letterInSolution) {
-                    indicesInSolution.push(indexInSolution);
-                }
-            });
+    const enterInputHandler = useCallback((): void => {
+        if (!solution) {
+            console.warn('Not loaded yet');
+            return;
+        }
 
-            if (indicesInSolution.length > 0) {
-                if (indicesInSolution.includes(indexInGuess)) {
-                    return 'green';
-                }
-
-                return 'yellow';
-            }
-
-            return 'gray';
-        },
-        [solution]
-    );
-
-    const updateColors = useCallback(
-        (guess: string): void => {
-            const newColors: Record<string, Color> = {};
-
-            guess.split('').forEach((letterInGuess, indexInGuess) => {
-                newColors[letterInGuess] = getColor(letterInGuess, indexInGuess);
-            });
-
-            setColors((old) => ({...newColors, ...old}));
-        },
-        [getColor]
-    );
-
-    const guessSubmitHandler = useCallback((): void => {
         const guess = words[currentWordIndex];
+        if (guess.length < 5) {
+            console.warn('Not enough letters');
+            return;
+        }
 
-        updateColors(guess);
+        setColors((old) => {
+            const newColors = [...old];
+            newColors[currentWordIndex] = ColorUtils.findColors(guess, solution);
+            return newColors;
+        });
 
         setWords((old) => [...old, guess]);
         setCurrentWordIndex((old) => old + 1);
-    }, [words, currentWordIndex, updateColors]);
+    }, [words, currentWordIndex, solution]);
+
+    const backspaceInputHandler = useCallback(() => {
+        const currentWord = words[currentWordIndex];
+
+        if (currentWord.length <= 0) {
+            return;
+        }
+
+        setWords((old) => {
+            const newWords = [...old];
+            newWords[currentWordIndex] = currentWord.substring(0, currentWord.length - 1);
+            return newWords;
+        });
+    }, [words, currentWordIndex]);
+
+    const letterInputHandler = useCallback(
+        (letter: Letter) => {
+            const currentWord = words[currentWordIndex];
+            if (currentWord.length >= 5) {
+                return;
+            }
+
+            setWords((old) => {
+                const newWords = [...old];
+                newWords[currentWordIndex] = currentWord + letter;
+                return newWords;
+            });
+        },
+        [words, currentWordIndex]
+    );
 
     const inputHandler = useCallback(
         (input: Input): void => {
-            const currentWord = words[currentWordIndex];
-
             if (input === 'enter') {
-                guessSubmitHandler();
+                enterInputHandler();
                 return;
             }
 
             if (input === 'backspace') {
-                if (currentWord.length > 0) {
-                    setWords((old) => {
-                        const newWords = [...old];
-                        newWords[currentWordIndex] = currentWord.substring(0, currentWord.length - 1);
-                        return newWords;
-                    });
-                }
-
+                backspaceInputHandler();
                 return;
             }
 
-            if (currentWord.length < 5) {
-                setWords((old) => {
-                    const newWords = [...old];
-                    newWords[currentWordIndex] = currentWord + input;
-                    return newWords;
-                });
-            }
+            letterInputHandler(input);
         },
-        [words, currentWordIndex, guessSubmitHandler]
+        [enterInputHandler, backspaceInputHandler, letterInputHandler]
     );
 
     return (
-        <WordleContext.Provider value={{words, solution, colors, isLoading: !!solution, inputHandler}}>
+        <WordleContext.Provider
+            value={{words, currentWordIndex, solution, colors, isLoading: !!solution, inputHandler}}
+        >
             {children}
         </WordleContext.Provider>
     );
