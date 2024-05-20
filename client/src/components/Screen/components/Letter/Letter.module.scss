@@ -1,0 +1,30 @@
+.letter {
+    color: hsl(0, 0%, 98%);
+
+    display: grid;
+    place-items: center;
+
+    width: 6.4rem;
+    aspect-ratio: 1 / 1;
+
+    border: 0.3rem solid hsl(240, 2%, 23%);
+
+    font-size: 3.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    &.gray {
+        background-color: hsl(0, 0%, 30%);
+        border: none;
+    }
+
+    &.yellow {
+        background-color: hsl(49, 51%, 47%);
+        border: none;
+    }
+
+    &.green {
+        background-color: hsl(115, 29%, 43%);
+        border: none;
+    }
+}
