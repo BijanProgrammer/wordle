@@ -18,13 +18,15 @@ function KeyboardLetter({letter}: KeyboardButtonProps): ReactElement {
     const {inputHandler} = useContext(WordsContext);
     const {lettersColors} = useContext(ColorContext);
 
+    const color = lettersColors.get(letter) || 'default';
+
     const keyClickHandler = (letter: Letter): void => {
         inputHandler(letter);
     };
 
     return (
         <button
-            className={clsx(keyboardStyles.key, styles.letter, styles[lettersColors.get(letter) || 'default'])}
+            className={clsx(keyboardStyles.key, styles.letter, styles[color])}
             type="button"
             onClick={() => keyClickHandler(letter)}
         >

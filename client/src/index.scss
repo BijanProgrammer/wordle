@@ -1,3 +1,18 @@
+:root {
+    --color-yellow: hsl(49, 51%, 47%);
+    --color-green: hsl(115, 29%, 43%);
+
+    --color-key: hsl(200, 1%, 51%);
+    --color-key-opposite: hsl(0, 0%, 97%);
+    --color-key-gray: hsl(240, 2%, 23%);
+
+    --color-screen-gray: hsl(0, 0%, 30%);
+    --color-screen-border: hsl(240, 2%, 23%);
+
+    --color-body-background: hsl(240, 3%, 7%);
+    --color-body-foreground: hsl(0, 0%, 100%);
+}
+
 *,
 *::before,
 *::after {
@@ -10,14 +25,14 @@
 }
 
 html {
-    font-size: 62.5%;
+    color-scheme: dark;
 
-    scroll-behavior: smooth;
+    font-size: 62.5%;
 }
 
 body {
-    background-color: hsl(240, 3%, 20%);
-    background-color: hsl(240, 3%, 7%);
+    background-color: var(--color-body-background);
+    color: var(--color-body-foreground);
 
     display: flex;
     flex-direction: column;

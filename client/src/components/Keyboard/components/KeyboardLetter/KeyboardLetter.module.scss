@@ -1,13 +1,13 @@
 .letter {
     &.gray {
-        background-color: hsl(240, 2%, 23%);
+        background-color: var(--color-key-gray);
     }
 
     &.yellow {
-        background-color: hsl(49, 51%, 47%);
+        background-color: var(--color-yellow);
     }
 
     &.green {
-        background-color: hsl(115, 29%, 43%);
+        background-color: var(--color-green);
     }
 }

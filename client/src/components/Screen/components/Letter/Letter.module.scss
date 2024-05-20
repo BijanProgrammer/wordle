@@ -1,30 +1,28 @@
 .letter {
-    color: hsl(0, 0%, 98%);
-
     display: grid;
     place-items: center;
 
     width: 6.4rem;
     aspect-ratio: 1 / 1;
 
-    border: 0.3rem solid hsl(240, 2%, 23%);
+    border: 0.3rem solid var(--color-screen-border);
 
     font-size: 3.8rem;
     font-weight: 700;
     text-transform: uppercase;
 
     &.gray {
-        background-color: hsl(0, 0%, 30%);
+        background-color: var(--color-screen-gray);
         border: none;
     }
 
     &.yellow {
-        background-color: hsl(49, 51%, 47%);
+        background-color: var(--color-yellow);
         border: none;
     }
 
     &.green {
-        background-color: hsl(115, 29%, 43%);
+        background-color: var(--color-green);
         border: none;
     }
 }
