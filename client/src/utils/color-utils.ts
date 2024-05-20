@@ -4,51 +4,32 @@ import {Letter, LETTERS} from '@/models/letter.ts';
 import {StringUtils} from '@/utils/string-utils.ts';
 
 export class ColorUtils {
-    public static generateWordColors(guess: string, solution: string): Color[] {
-        const currentWordColors: Color[] = [];
-        const coloredLetters: Record<string, number> = {};
+    public static generateWordColors(word: string, solution: string): Color[] {
+        const colors: Color[] = [];
+        const coloredLetters = new ColoredLetters();
 
-        guess.split('').forEach((letterInGuess, indexInGuess) => {
-            const indicesInSolution: number[] = [];
-            solution?.split('').forEach((letterInSolution, indexInSolution) => {
-                if (letterInGuess === letterInSolution) {
-                    indicesInSolution.push(indexInSolution);
-                }
-            });
-
-            if (indicesInSolution.length > 0) {
-                if (indicesInSolution.includes(indexInGuess)) {
-                    currentWordColors[indexInGuess] = 'green';
-
-                    if (!coloredLetters[letterInGuess]) {
-                        coloredLetters[letterInGuess] = 0;
-                    }
-                    coloredLetters[letterInGuess]++;
-                }
-            }
-        });
-
-        guess.split('').forEach((letterInGuess, indexInGuess) => {
-            if (currentWordColors[indexInGuess]) {
+        word.split('').forEach((letter, index) => {
+            if (letter !== solution[index]) {
                 return;
             }
 
-            const countInSolution = StringUtils.count(solution || '', letterInGuess);
-            const countedInGuess = coloredLetters[letterInGuess] || 0;
-
-            if (countedInGuess >= countInSolution) {
-                currentWordColors[indexInGuess] = 'gray';
-            } else {
-                currentWordColors[indexInGuess] = 'yellow';
-            }
-
-            if (!coloredLetters[letterInGuess]) {
-                coloredLetters[letterInGuess] = 0;
-            }
-            coloredLetters[letterInGuess]++;
+            colors[index] = 'green';
+            coloredLetters.add(letter);
         });
 
-        return currentWordColors;
+        word.split('').forEach((letter, index) => {
+            if (colors[index]) {
+                return;
+            }
+
+            const countedInGuess = coloredLetters.count(letter);
+            const countInSolution = StringUtils.count(solution, letter);
+
+            colors[index] = countedInGuess < countInSolution ? 'yellow' : 'gray';
+            coloredLetters.add(letter);
+        });
+
+        return colors;
     }
 
     public static generateLettersColors(
@@ -88,5 +69,21 @@ export class ColorUtils {
         }
 
         return colors;
+    }
+}
+
+class ColoredLetters {
+    private record: Record<string, number> = {};
+
+    public count(letter: string): number {
+        return this.record[letter] || 0;
+    }
+
+    public add(letter: string): void {
+        if (!this.record[letter]) {
+            this.record[letter] = 0;
+        }
+
+        this.record[letter]++;
     }
 }
