@@ -14,7 +14,7 @@ type KeyboardButtonProps = {
 };
 
 function KeyboardLetter({letter}: KeyboardButtonProps): ReactElement {
-    const {colors, inputHandler} = useContext(WordleContext);
+    const {lettersColors, inputHandler} = useContext(WordleContext);
 
     const keyClickHandler = (letter: Letter): void => {
         inputHandler(letter);
@@ -22,7 +22,7 @@ function KeyboardLetter({letter}: KeyboardButtonProps): ReactElement {
 
     return (
         <button
-            className={clsx(keyboardStyles.key, styles.letter, styles[colors[letter] || 'default'])}
+            className={clsx(keyboardStyles.key, styles.letter, styles[lettersColors.get(letter) || 'default'])}
             type="button"
             onClick={() => keyClickHandler(letter)}
         >

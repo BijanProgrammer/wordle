@@ -1,9 +1,10 @@
 import {Color} from '@/models/color.ts';
+import {Letter, LETTERS} from '@/models/letter.ts';
 
 import {StringUtils} from '@/utils/string-utils.ts';
 
 export class ColorUtils {
-    public static findColors(guess: string, solution: string): Color[] {
+    public static generateWordColors(guess: string, solution: string): Color[] {
         const currentWordColors: Color[] = [];
         const coloredLetters: Record<string, number> = {};
 
@@ -48,5 +49,44 @@ export class ColorUtils {
         });
 
         return currentWordColors;
+    }
+
+    public static generateLettersColors(
+        words: string[],
+        currentWordIndex: number,
+        wordsColors: Color[][]
+    ): Map<Letter, Color> {
+        const colors = new Map<Letter, Color>();
+
+        for (let wordIndex = 0; wordIndex < currentWordIndex; wordIndex++) {
+            const currentWord = words[wordIndex];
+            if (!currentWord) {
+                continue;
+            }
+
+            for (let letterIndex = 0; letterIndex < 5; letterIndex++) {
+                const currentLetter = words[wordIndex][letterIndex] as Letter;
+                if (!LETTERS.includes(currentLetter)) {
+                    continue;
+                }
+
+                const currentColor = wordsColors[wordIndex][letterIndex] || 'default';
+                const oldColor = colors.get(currentLetter);
+
+                if (oldColor === 'green' || currentColor === 'green') {
+                    colors.set(currentLetter, 'green');
+                    continue;
+                }
+
+                if (oldColor === 'yellow' || currentColor === 'yellow') {
+                    colors.set(currentLetter, 'yellow');
+                    continue;
+                }
+
+                colors.set(currentLetter, 'gray');
+            }
+        }
+
+        return colors;
     }
 }

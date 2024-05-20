@@ -14,7 +14,7 @@ type Props = {
 };
 
 function Word({index, word}: Props): ReactElement {
-    const {colors, currentWordIndex} = useContext(WordleContext);
+    const {wordsColors, currentWordIndex} = useContext(WordleContext);
 
     const isSubmitted = index < currentWordIndex;
 
@@ -24,7 +24,7 @@ function Word({index, word}: Props): ReactElement {
                 <Letter
                     key={letterIndex}
                     letter={word[letterIndex]}
-                    color={isSubmitted ? colors[index][letterIndex] : 'default'}
+                    color={isSubmitted ? wordsColors[index][letterIndex] : 'default'}
                 />
             ))}
         </div>

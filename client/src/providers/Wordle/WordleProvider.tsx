@@ -11,7 +11,8 @@ type ContextValue = {
     words: string[];
     currentWordIndex: number;
     solution: string | null;
-    colors: Color[][];
+    wordsColors: Color[][];
+    lettersColors: Map<Letter, Color>;
     isLoading: boolean;
     inputHandler: (input: Input) => void;
 };
@@ -20,7 +21,8 @@ export const WordleContext = createContext<ContextValue>({
     words: [],
     currentWordIndex: 0,
     solution: null,
-    colors: [],
+    wordsColors: [],
+    lettersColors: new Map<Letter, Color>(),
     isLoading: false,
     inputHandler: () => {},
 });
@@ -35,7 +37,8 @@ function WordleProvider({children}: Props): ReactElement {
     const [words, setWords] = useState<string[]>(ArrayUtils.fill(6, ''));
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
-    const [colors, setColors] = useState<Color[][]>(ArrayUtils.fill(6, []));
+    const [wordsColors, setWordsColors] = useState<Color[][]>(ArrayUtils.fill(6, []));
+    const [lettersColors, setLettersColors] = useState<Map<Letter, Color>>(new Map());
 
     useEffect(() => {
         const fetchSolution = async (): Promise<void> => {
@@ -47,6 +50,10 @@ function WordleProvider({children}: Props): ReactElement {
 
         fetchSolution().then();
     }, []);
+
+    useEffect(() => {
+        setLettersColors(ColorUtils.generateLettersColors(words, currentWordIndex, wordsColors));
+    }, [words, currentWordIndex, wordsColors]);
 
     const enterInputHandler = useCallback((): void => {
         if (!solution) {
@@ -60,9 +67,9 @@ function WordleProvider({children}: Props): ReactElement {
             return;
         }
 
-        setColors((old) => {
+        setWordsColors((old) => {
             const newColors = [...old];
-            newColors[currentWordIndex] = ColorUtils.findColors(guess, solution);
+            newColors[currentWordIndex] = ColorUtils.generateWordColors(guess, solution);
             return newColors;
         });
 
@@ -119,7 +126,7 @@ function WordleProvider({children}: Props): ReactElement {
 
     return (
         <WordleContext.Provider
-            value={{words, currentWordIndex, solution, colors, isLoading: !!solution, inputHandler}}
+            value={{words, currentWordIndex, solution, wordsColors, lettersColors, isLoading: !!solution, inputHandler}}
         >
             {children}
         </WordleContext.Provider>
