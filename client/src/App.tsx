@@ -1,5 +1,6 @@
 import {ReactElement} from 'react';
 
+import Header from '@/components/Header/Header.tsx';
 import Keyboard from '@/components/Keyboard/Keyboard.tsx';
 import Screen from '@/components/Screen/Screen.tsx';
 
@@ -15,6 +16,7 @@ function App(): ReactElement {
             <WordsProvider>
                 <ColorProvider>
                     <div id="app">
+                        <Header />
                         <Screen />
                         <Keyboard />
                     </div>

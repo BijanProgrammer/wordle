@@ -2,13 +2,14 @@
     display: grid;
     place-items: center;
 
-    width: 6.4rem;
+    width: 6.2rem;
     aspect-ratio: 1 / 1;
 
-    border: 0.3rem solid var(--color-screen-border);
+    border: 2px solid var(--color-screen-border);
 
-    font-size: 3.8rem;
+    font-size: 3.2rem;
     font-weight: 700;
+
     text-transform: uppercase;
 
     &.gray {

@@ -2,6 +2,8 @@
     --color-yellow: hsl(49, 51%, 47%);
     --color-green: hsl(115, 29%, 43%);
 
+    --color-header-border: hsl(240, 2%, 23%);
+
     --color-key: hsl(200, 1%, 51%);
     --color-key-opposite: hsl(0, 0%, 97%);
     --color-key-gray: hsl(240, 2%, 23%);
@@ -21,13 +23,27 @@
     margin: 0;
     padding: 0;
 
-    font-family: system-ui;
+    font-family: franklin, system-ui;
 }
 
 html {
     color-scheme: dark;
 
     font-size: 62.5%;
+}
+
+input,
+label,
+select,
+textarea,
+button,
+fieldset,
+legend,
+datalist,
+output,
+option,
+optgroup {
+    font-family: inherit;
 }
 
 body {
